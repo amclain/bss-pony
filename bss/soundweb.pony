@@ -9,7 +9,7 @@ actor Soundweb
   be setsvpercent(sv: U16, value: U32) =>
     _env.out.print(
       "setsvpercent :: " +
-      "address: " + _address.string() + " " +
-      "sv: " + sv.string() + " " +
+      "address: " + _address.string(FormatHex) + " " +
+      "sv: " + sv.string(FormatHex) + " " +
       "value: " + value.string()
     )
