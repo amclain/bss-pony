@@ -93,7 +93,6 @@ actor Soundweb
 
     escaped_bytes.push(0x03) // ETX
 
-    _env.out.print(escaped_bytes)
     _socket.write(escaped_bytes)
 
   be dispose() =>
