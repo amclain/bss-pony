@@ -23,7 +23,18 @@ actor Soundweb
       "value: " + value.string()
     )
 
-    _socket.write("test\n")
+    var bytes = Array[U8]
+    var len: U8 = 6
+    var address' = _address
+
+    while len > 0 do
+      bytes.unshift((address' and 0xFF).u8())
+
+      address' = address' >> 8
+      len = len - 1
+    end
+
+    _socket.write(bytes)
 
   be dispose() =>
     _socket.dispose()
