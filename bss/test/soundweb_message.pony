@@ -25,7 +25,7 @@ class TestSoundwebMessage is UnitTest
     for pair in subject.encode(command, address, sv, data).pairs() do
       try
         (var i, var value) = pair
-        h.expect_eq[U8](value, encoded.apply(i), "Index: " + i.string())
+        h.expect_eq[U8](value, encoded(i), "Index: " + i.string())
       end
     end
 

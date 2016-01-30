@@ -46,7 +46,7 @@ interface SoundwebMessage
     len = bytes.size()
     while i < len do
       try
-        checksum = checksum xor bytes.apply(i)
+        checksum = checksum xor bytes(i)
       end
 
       i = i + 1
@@ -65,7 +65,7 @@ interface SoundwebMessage
 
       while j < len2 do
         try
-          if bytes.apply(i) == reserved_bytes.apply(j) then
+          if bytes(i) == reserved_bytes(j) then
             is_reserved = true
             break
           end
@@ -77,9 +77,9 @@ interface SoundwebMessage
       try
         if is_reserved then
           escaped_bytes.push(0x1B)
-          escaped_bytes.push(bytes.apply(i) + 0x80)
+          escaped_bytes.push(bytes(i) + 0x80)
         else
-          escaped_bytes.push(bytes.apply(i))
+          escaped_bytes.push(bytes(i))
         end
       end
 
