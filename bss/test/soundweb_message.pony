@@ -5,7 +5,7 @@ class TestSoundwebMessage is UnitTest
   fun name(): String => "Soundweb Message"
 
   fun ref apply(h: TestHelper): TestResult =>
-    let command: U8 = 0x8D
+    let command: U8 = SoundwebCommand.set_sv_percent()
     let address: U64 = 0x100103000137
     let sv: U16 = 0x0000
     let data: U32 = 0x00640000

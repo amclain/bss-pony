@@ -23,7 +23,9 @@ actor Soundweb is SoundwebMessage
       "value: " + value.string()
     )
 
-    _socket.write(encode(0x8D, _address, sv, value * 65536))
+    _socket.write(
+      encode(SoundwebCommand.set_sv_percent(),_address, sv, value * 65536)
+    )
 
   be dispose() =>
     _socket.dispose()

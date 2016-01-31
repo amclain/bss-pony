@@ -8,6 +8,17 @@ primitive SoundwebSpecial
   fun apply(): Array[U8] =>
     [stx(), etx(), ack(), nak(), esc()]
 
+primitive SoundwebCommand
+  fun set_sv(): U8 => 0x88
+  fun subscribe_sv(): U8 => 0x89
+  fun unsubscribe_sv(): U8 => 0x8A
+  fun venue_preset_recall(): U8 => 0x8B
+  fun param_preset_recall(): U8 => 0x8C
+  fun set_sv_percent(): U8 => 0x8D
+  fun subscribe_sv_percent(): U8 => 0x8E
+  fun unsubscribe_sv_percent(): U8 => 0x8F
+  fun bump_sv_percent(): U8 => 0x90
+
 interface SoundwebMessage
   fun encode(command: U8, address: U64, sv: U16, data: U32): Array[U8] =>
     var bytes = Array[U8]
