@@ -1,63 +1,20 @@
 interface SoundwebMessage
   fun encode(command: U8, address: U64, sv: U16, data: U32): Array[U8] =>
     var bytes = Array[U8]
-    var buffer = Array[U8]
 
     bytes.push(command)
 
-    var len: USize = 6
-    var address' = address
-    while len > 0 do
-      buffer.push((address' and 0xFF).u8())
+    bytes = bytes.concat(_var_to_bytes(address, 6).values())
+    bytes = bytes.concat(_var_to_bytes(sv, 2).values())
+    bytes = bytes.concat(_var_to_bytes(data, 4).values())
 
-      address' = address' >> 8
-      len = len - 1
-    end
-
-    bytes = bytes.concat(buffer.reverse().values())
-    buffer.clear()
-
-    len = 2
-    var sv' = sv
-    while len > 0 do
-      buffer.push((sv' and 0xFF).u8())
-
-      sv' = sv' >> 8
-      len = len - 1
-    end
-
-    bytes = bytes.concat(buffer.reverse().values())
-    buffer.clear()
-
-    len = 4
-    var data' = data
-    while len > 0 do
-      buffer.push((data' and 0xFF).u8())
-
-      data' = data' >> 8
-      len = len - 1
-    end
-
-    bytes = bytes.concat(buffer.reverse().values())
-    buffer.clear()
-
-    var checksum: U8 = 0
-    var i: USize = 0
-    len = bytes.size()
-    while i < len do
-      try
-        checksum = checksum xor bytes(i)
-      end
-
-      i = i + 1
-    end
-
-    bytes.push(checksum)
+    bytes.push(_checksum(bytes))
 
     var reserved_bytes: Array[U8] = [0x02, 0x03, 0x06, 0x15, 0x1B]
     var escaped_bytes: Array[U8] = [0x02]
-    i = 0
-    len = bytes.size()
+    var len: USize = bytes.size()
+    var i: USize = 0
+
     while i < len do
       var is_reserved: Bool = false
       var len2: USize = reserved_bytes.size()
@@ -90,3 +47,32 @@ interface SoundwebMessage
 
   fun decode(): Bool =>
     false
+
+  fun _var_to_bytes(variable: Unsigned, num_bytes: USize): Array[U8] =>
+    var buffer = Array[U8]
+
+    var len = num_bytes
+    var variable' = variable.u128()
+    while len > 0 do
+      buffer.push((variable' and 0xFF).u8())
+
+      variable' = variable' >> 8
+      len = len - 1
+    end
+
+    buffer.reverse()
+
+  fun _checksum(bytes: Array[U8]): U8 =>
+    var checksum: U8 = 0
+    var i: USize = 0
+    var len: USize = bytes.size()
+
+    while i < len do
+      try
+        checksum = checksum xor bytes(i)
+      end
+
+      i = i + 1
+    end
+
+    checksum
