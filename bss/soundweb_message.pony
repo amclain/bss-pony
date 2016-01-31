@@ -1,3 +1,13 @@
+primitive SoundwebSpecial
+  fun stx(): U8 => 0x02
+  fun etx(): U8 => 0x03
+  fun ack(): U8 => 0x06
+  fun nak(): U8 => 0x15
+  fun esc(): U8 => 0x1B
+
+  fun apply(): Array[U8] =>
+    [stx(), etx(), ack(), nak(), esc()]
+
 interface SoundwebMessage
   fun encode(command: U8, address: U64, sv: U16, data: U32): Array[U8] =>
     var bytes = Array[U8]
@@ -10,8 +20,8 @@ interface SoundwebMessage
 
     bytes.push(_checksum(bytes))
 
-    var reserved_bytes: Array[U8] = [0x02, 0x03, 0x06, 0x15, 0x1B]
-    var escaped_bytes: Array[U8] = [0x02]
+    var reserved_bytes: Array[U8] = SoundwebSpecial()
+    var escaped_bytes: Array[U8] = [SoundwebSpecial.stx()]
     var len: USize = bytes.size()
     var i: USize = 0
 
@@ -33,7 +43,7 @@ interface SoundwebMessage
 
       try
         if is_reserved then
-          escaped_bytes.push(0x1B)
+          escaped_bytes.push(SoundwebSpecial.esc())
           escaped_bytes.push(bytes(i) + 0x80)
         else
           escaped_bytes.push(bytes(i))
@@ -43,7 +53,7 @@ interface SoundwebMessage
       i = i + 1
     end
 
-    escaped_bytes.push(0x03) // ETX
+    escaped_bytes.push(SoundwebSpecial.etx())
 
   fun decode(): Bool =>
     false
