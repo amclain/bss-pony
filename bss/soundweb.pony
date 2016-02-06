@@ -5,6 +5,7 @@ actor Soundweb is SoundwebMessage
   let _host: String
   let _service: String
   let _address: U64
+  let _format_hex: FormatSettingsInt
 
   var _socket: TCPConnection
 
@@ -15,11 +16,14 @@ actor Soundweb is SoundwebMessage
     _address = address
     _socket = TCPConnection.create(SoundwebNotify, _host, _service)
 
+    _format_hex = FormatSettingsInt.create()
+    _format_hex.set_format(FormatHex)
+
   be setsvpercent(sv: U16, value: U32) =>
     _env.out.print(
       "setsvpercent :: " +
-      "address: " + _address.string(FormatHex) + " " +
-      "sv: " + sv.string(FormatHex) + " " +
+      "address: " + _address.string(_format_hex) + " " +
+      "sv: " + sv.string(_format_hex) + " " +
       "value: " + value.string()
     )
 
