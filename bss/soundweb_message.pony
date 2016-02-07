@@ -20,7 +20,7 @@ primitive SoundwebCommand
   fun bump_sv_percent(): U8 => 0x90
 
 interface SoundwebMessage
-  fun encode(command: U8, address: U64, sv: U16, data: U32): Array[U8] =>
+  fun encode(command: U8, address: U64, sv: U16, data: U32): Array[U8] val =>
     var bytes = Array[U8]
 
     bytes.push(command)
@@ -32,9 +32,11 @@ interface SoundwebMessage
     bytes.push(_checksum(bytes))
 
     var reserved_bytes: Array[U8] = SoundwebSpecial()
-    var escaped_bytes: Array[U8] = [SoundwebSpecial.stx()]
+    var escaped_bytes = recover trn Array[U8] end
     var len: USize = bytes.size()
     var i: USize = 0
+
+    escaped_bytes.push(SoundwebSpecial.stx())
 
     while i < len do
       var is_reserved: Bool = false
@@ -65,6 +67,7 @@ interface SoundwebMessage
     end
 
     escaped_bytes.push(SoundwebSpecial.etx())
+    escaped_bytes
 
   fun decode(): Bool =>
     false

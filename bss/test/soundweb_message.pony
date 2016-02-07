@@ -4,7 +4,7 @@ use ".."
 class TestSoundwebMessage is UnitTest
   fun name(): String => "Soundweb Message"
 
-  fun ref apply(h: TestHelper): TestResult =>
+  fun ref apply(h: TestHelper) =>
     let command: U8 = SoundwebCommand.set_sv_percent()
     let address: U64 = 0x100103000137
     let sv: U16 = 0x0000
@@ -25,11 +25,9 @@ class TestSoundwebMessage is UnitTest
     for pair in subject.encode(command, address, sv, data).pairs() do
       try
         (var i, var value) = pair
-        h.expect_eq[U8](value, encoded(i), "Index: " + i.string())
+        h.assert_eq[U8](value, encoded(i), "Index: " + i.string())
       end
     end
-
-    true
 
 class SoundwebMessageHost is SoundwebMessage
   new create() =>
